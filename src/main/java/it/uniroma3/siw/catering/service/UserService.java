@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static it.uniroma3.siw.catering.Utils.IterableToList;
+
 /**
  * The UserService handles logic for Users.
  */
@@ -49,10 +51,6 @@ public class UserService {
      */
     @Transactional
     public List<User> getAllUsers() {
-        List<User> result = new ArrayList<>();
-        Iterable<User> iterable = this.userRepository.findAll();
-        for(User user : iterable)
-            result.add(user);
-        return result;
+        return IterableToList(this.userRepository.findAll());
     }
 }

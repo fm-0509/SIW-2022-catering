@@ -21,6 +21,9 @@ public class Piatto {
     @ManyToMany
     private List<Ingrediente> ingredienti;
 
+    @ManyToOne
+    private Chef chef;
+
     //TODO: immagine
     @OneToOne(fetch = FetchType.LAZY)
     private Image image;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import static it.uniroma3.siw.catering.Utils.IterableToList;
 
 @Component
 public class ChefService {
@@ -18,12 +19,7 @@ public class ChefService {
 
     public List<Chef> getAllBuffets()
     {
-        List<Chef> chefs = new ArrayList<>();
-        for(Chef b : this.chefRepository.findAll())
-            chefs.add(b);
-
-        return chefs;
-
+       return IterableToList(this.chefRepository.findAll());
     }
 
     public Chef findById(Long id) {

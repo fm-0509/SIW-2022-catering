@@ -5,9 +5,9 @@ import it.uniroma3.siw.catering.repository.BuffetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static it.uniroma3.siw.catering.Utils.IterableToList;
 @Component
 public class BuffetService {
 
@@ -16,15 +16,18 @@ public class BuffetService {
 
     public List<Buffet> getAllBuffets()
     {
-        List<Buffet> buffets = new ArrayList<>();
-        for(Buffet b : this.buffetRepository.findAll())
-            buffets.add(b);
-
-        return buffets;
-
+        return IterableToList(this.buffetRepository.findAll());
     }
 
     public Buffet findById(Long id) {
         return this.buffetRepository.findById(id).orElse(null);
     }
+
+    public Buffet save(Buffet buffet)
+    {
+        return this.buffetRepository.save(buffet);
+    }
+
 }
+
+

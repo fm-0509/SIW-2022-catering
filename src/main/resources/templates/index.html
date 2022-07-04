@@ -3,8 +3,11 @@
 <head th:replace="fragments/base.html :: headerfiles(test)"> </head>
 <body>
 <header th:replace="fragments/base.html :: intestazione"></header>
-
-<div id="carosello" class="carousel slide" data-bs-ride="true">
+<div class="container">
+    <div th:if="${alert != null}">
+        <div th:replace="fragments/base.html :: alert(${alert})"></div>
+    </div>
+    <div id="carosello" class="carousel slide" data-bs-ride="true">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#carosello" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         <button type="button" data-bs-target="#carosello" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -30,10 +33,10 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-
+<div class="container py-5">
 <div class="d-flex flex-row mb-3 justify-content-center align-items-center">
-    <div class="flex-shrink-0">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ49szwVnt3IAJBxcs3oppP7RoHNof4FE3_g&usqp=CAU" alt="...">
+    <div class="flex-shrink-0" >
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ49szwVnt3IAJBxcs3oppP7RoHNof4FE3_g&usqp=CAU" alt="..." class="pe-4">
     </div>
     <div >Ostia Antica Park Hotel, un nuovo hotel di recentissima costruzione, situato tra la famosa località turistica archeologica di Ostia Antica ed
         il mare di Roma (Ostia Lido), a soli 10 km dall' Aeroporto di Fiumicino Leonardo da Vinci e circa 12 km dal complesso della Nuova Fiera di Roma.
@@ -46,17 +49,19 @@
         Completa i servizi della struttura il nuovo ristorante "Ostia Antica Park Hotel Restaurant" caratterizzato da specialitá romane pizzeria gourmet e
         griglieria, il ristorante è aperto tutti i giorni dalle 19 alle 23, è consigliata la prenotazione.</div>
     <div class="flex-shrink-0">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ49szwVnt3IAJBxcs3oppP7RoHNof4FE3_g&usqp=CAU" alt="...">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ49szwVnt3IAJBxcs3oppP7RoHNof4FE3_g&usqp=CAU" alt="..." class="ps-4">
     </div>
 
 </div>
 <div class="d-flex flex-row mb-3 justify-content-center align-items-center">
     <div class="flex-shrink-0">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ49szwVnt3IAJBxcs3oppP7RoHNof4FE3_g&usqp=CAU" alt="...">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ49szwVnt3IAJBxcs3oppP7RoHNof4FE3_g&usqp=CAU" alt="..." class="pe-4">
     </div>
     <div >L'hotel dispone di 80 camere singole, doppie e triple, spaziose e confortevoli, quasi tutte dotate di un balcone privato. Sono inoltre disponibili
         su richiesta camere per non fumatori e per disabili.
         Tutte le camere dispongono dei seguenti servizi in camera:</div>
+</div>
+</div>
 </div>
 <footer th:replace="fragments/base.html :: footer"></footer>
 </body>

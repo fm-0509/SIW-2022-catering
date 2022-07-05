@@ -28,6 +28,13 @@ public class BuffetService {
         return this.buffetRepository.save(buffet);
     }
 
+    public Buffet getBuffetById(Long id) {
+        return this.buffetRepository.findById(id).orElse(null);
+    }
+
+    public void delete(Buffet buffetById) {
+        this.buffetRepository.delete(buffetById);
+    }
 }
 
 

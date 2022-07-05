@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="it">
+<head th:replace="fragments/base.html :: headerfiles(test)"> </head>
+<body>
+<header th:replace="fragments/base.html :: intestazione"></header>
+<div class="container">
+    <div th:if="${alert != null}">
+        <div th:replace="fragments/base.html :: alert(${alert})"></div>
+    </div>
+    <h2>Dettagli buffet</h2>
+    <div class="container py-5">
+        <h2 th:text="${buffet.nome}"></h2>
+        <p th:text="${buffet.descrizione}"></p>
+
+
+
+      <table th:if="${buffet.piatti}" class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Descrizione</th>
+                <th sec:authorize="hasAnyAuthority('ADMIN')">Azioni</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="piatto : ${buffet.piatti}">
+                <td><a th:href="@{'/piatto/'+ ${piatto.id} }" th:text="${piatto.nome}"></a></td>
+                <td th:text="${piatto.descrizione}"></td>
+                <th sec:authorize="hasAnyAuthority('ADMIN')"><button class="btn btn-danger elimina_piatto" th:attr="data-id=${piatto.id}">Elimina</button></th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div sec:authorize="hasAnyAuthority('ADMIN')">
+        <button class="btn btn-primary" id="add_piatto">Aggiungi piatto</button>
+
+
+        <div class="modal fade" tabindex="-1" id="modal_form">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Aggiungi piatto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="px-4" action="#" id="aggiungi_buffet">
+                            <div class="form-group">
+                                <label for="nome">Nome</label>
+                                <input id="nome" class="form-control" type="text" placeholder="Nome" required="" name="nome" value="">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="descrizione">Descrizione</label>
+                                <textarea id="descrizione" class="form-control" type="text" placeholder="Descrizione" required="" name="descrizione" value=""></textarea>
+                            </div>
+
+                            <input type="hidden" th:value="${buffet.id}" name="buffet" />
+                            <input type="hidden" th:value="${buffet.chef.id}" name="chef" />
+
+                        </form>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-primary" id="invia">Inserisci</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+
+    </div>
+<footer th:replace="fragments/base.html :: footer"></footer>
+
+
+<script>
+    $(function (){
+        const modal = new bootstrap.Modal('#modal_form');
+
+
+        $(".elimina_piatto").click(function (e) {
+            // alert("started");
+            e.preventDefault();
+            // if(!$(this).data("idStanza"))
+            //   return false;
+            if(confirm("Eliminare il piatto?"))
+                $.ajax(
+                    {
+                        method : "DELETE",
+                        url : "/api/piatto/"+$(this).data("id") ,
+                        success: function (response)
+                        {
+                            if(response.status == 200)
+                                location.reload();
+                            else
+                                $("#alert-ct").html(response.html);
+                        },
+                        error: function (response) {
+                            alert(response.html);
+                        }
+                    }
+                )
+
+        })
+
+        $("#add_piatto").click(function (){
+            modal.show();
+        })
+
+
+        $("#invia").click(function () {
+            $.ajax(
+                {
+                    method : "POST",
+                    url : "/api/piatto",
+                    data: $("#aggiungi_buffet").serialize(),
+                    success: function (response)
+                    {
+                        if(response.status == 200)
+                            location.reload();
+                        else
+                            $("#alert-ct").html(response.html);
+                    },
+                    error: function (response) {
+                        alert(response.html);
+                    }
+                }
+            )
+
+
+
+
+        })
+
+
+        $("#invia_modifica").click(function (){
+            $.ajax(
+                {
+                    method : "PUT",
+                    url : "/api/buffet",
+                    data: $("#modifica_buffet").serialize(),
+                    success: function (response)
+                    {
+                        if(response.status == 200)
+                            location.reload();
+                        else
+                            $("#alert-ct").html(response.html);
+                    },
+                    error: function (response) {
+                        alert(response.html);
+                    }
+                }
+            )
+
+        })
+
+
+    })
+
+
+</script>
+
+
+
+</body>
+</html>

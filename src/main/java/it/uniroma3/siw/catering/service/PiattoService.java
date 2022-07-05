@@ -39,4 +39,8 @@ public class PiattoService {
     public boolean containsById(Long id) {
         return this.piattoRepository.existsById(id);
     }
+
+    public void delete(Piatto piattoById) {
+        this.piattoRepository.delete(piattoById);
+    }
 }

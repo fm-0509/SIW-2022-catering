@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="it">
+<head th:replace="fragments/base.html :: headerfiles(test)"> </head>
+<body>
+<header th:replace="fragments/base.html :: intestazione"></header>
+<div class="container">
+    <div th:if="${alert != null}">
+        <div th:replace="fragments/base.html :: alert(${alert})"></div>
+    </div>
+    <h2>I nostri buffet</h2>
+    <div class="container py-5">
+                <div class="card" th:each="buffet:${buffets}" style="width:30%; margin: auto; margin-bottom: 10px">
+                    <div class="card-body">
+                        <h5 class="card-title"><a  th:text="${buffet.nome}" th:href="@{'/buffet/'+ ${buffet.id} + '/'}"></a></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"></h6>
+                        <p class="card-text" th:text="${buffet.descrizione}"></p>
+                        <p class="card-link" sec:authorize="hasAnyAuthority('ADMIN')">
+                            <button class="modifica_buffet btn btn-primary" th:attr="data-id=${buffet.id}">Modifica</button>
+                            <button class="elimina_buffet btn btn-danger" th:attr="data-id=${buffet.id}">Elimina</button>
+                        </p>
+                    </div>
+
+
+            </div>
+        </div>
+
+    <div sec:authorize="hasAnyAuthority('ADMIN')">
+        <button class="btn btn-primary" id="add_buffet">Aggiungi buffet</button>
+
+
+        <div class="modal fade" tabindex="-1" id="modal_form">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Aggiungi buffet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="px-4" action="#" id="aggiungi_buffet">
+                            <div class="form-group">
+                                <label for="nome">Nome</label>
+                                <input id="nome" class="form-control" type="text" placeholder="Nome" required="" name="nome" value="">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="descrizione">Descrizione</label>
+                                <textarea id="descrizione" class="form-control" type="text" placeholder="Descrizione" required="" name="descrizione" value=""></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="chef">Chef</label>
+                                <select id="chef" class="form-control" name="chef">
+                                <option value="0">Selezionare lo chef</option>
+                                <option th:each="chef:${chefs}" th:value="${chef.id}" th:text="${chef.nome}"></option>
+                                </select>
+                            </div>
+                        </form>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-primary" id="invia">Inserisci</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1" id="modal_form_modifica">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifica buffet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="px-4" action="#" id="modifica_buffet">
+                            <div class="form-group">
+                                <label for="nome_modifica">Nome</label>
+                                <input id="nome_modifica" class="form-control" type="text" placeholder="Nome" required="" name="nome" value="">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="descrizione_modifica">Descrizione</label>
+                                <textarea id="descrizione_modifica" class="form-control" type="text" placeholder="Descrizione" required="" name="descrizione" value=""></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="chef_id">Chef</label>
+                                <select id="chef_id" class="form-control" name="chef" readonly>
+                                    <option value="0">Selezionare lo chef</option>
+                                    <option th:each="chef:${chefs}" th:value="${chef.id}" th:text="${chef.nome}"></option>
+                                </select>
+                                <input type="hidden" name="id" id="id_buffet" value="0">
+                            </div>
+                        </form>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-primary" id="invia_modifica">Modifica</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    </div>
+<footer th:replace="fragments/base.html :: footer"></footer>
+
+
+<script>
+    $(function (){
+        const modal = new bootstrap.Modal('#modal_form');
+        const modal_modifica = new bootstrap.Modal('#modal_form_modifica');
+
+
+        $(".elimina_buffet").click(function (e) {
+            // alert("started");
+            e.preventDefault();
+            // if(!$(this).data("idStanza"))
+            //   return false;
+            if(confirm("Eliminare il buffet?"))
+                $.ajax(
+                    {
+                        method : "DELETE",
+                        url : "/api/buffet/"+$(this).data("id") ,
+                        success: function (response)
+                        {
+                            if(response.status == 200)
+                                location.reload();
+                            else
+                                $("#alert-ct").html(response.html);
+                        },
+                        error: function (response) {
+                            alert(response.html);
+                        }
+                    }
+                )
+
+        })
+
+        $("#add_buffet").click(function (){
+            modal.show();
+        })
+
+        $(".modifica_buffet").click(function (event) {
+            event.preventDefault();
+
+            $.get({
+                url: "/api/buffet/"+ $(this).data("id"),
+                success : function (response)
+                {
+                    if(response.status == 200)
+                    {
+                        $("#nome_modifica").val(response.data[0].nome)
+                        $("#descrizione_modifica").val(response.data[0].descrizione)
+                        $("#chef_id").val(response.data[0].chef.id)
+                        $("#id_buffet").val(response.data[0].id)
+                        modal_modifica.show();
+                    }
+                }
+            })
+        })
+
+        $("#invia").click(function () {
+            $.ajax(
+                {
+                    method : "POST",
+                    url : "/api/buffet",
+                    data: $("#aggiungi_buffet").serialize(),
+                    success: function (response)
+                    {
+                        if(response.status == 200)
+                            location.reload();
+                        else
+                            $("#alert-ct").html(response.html);
+                    },
+                    error: function (response) {
+                        alert(response.html);
+                    }
+                }
+            )
+
+
+
+
+        })
+
+
+        $("#invia_modifica").click(function (){
+            $.ajax(
+                {
+                    method : "PUT",
+                    url : "/api/buffet",
+                    data: $("#modifica_buffet").serialize(),
+                    success: function (response)
+                    {
+                        if(response.status == 200)
+                            location.reload();
+                        else
+                            $("#alert-ct").html(response.html);
+                    },
+                    error: function (response) {
+                        alert(response.html);
+                    }
+                }
+            )
+
+        })
+
+
+    })
+
+
+</script>
+
+
+
+</body>
+</html>

@@ -3,10 +3,7 @@ package it.uniroma3.siw.catering.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data @NoArgsConstructor
 
@@ -22,4 +19,5 @@ public class Ingrediente {
     private String origine;
 
     private String descrizione;
+
 }

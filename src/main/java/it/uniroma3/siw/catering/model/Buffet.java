@@ -23,14 +23,14 @@ public class Buffet {
     private Chef chef;
 
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "buffet")
     private List<Piatto> piatti;
 //    private List<Piatto> piatti;
 
     @NotBlank
     private String nome;
 
-    @NotBlank @Column(length = LUNGHEZZA_DESCRIZIONE)
+    @Column(length = LUNGHEZZA_DESCRIZIONE)
     private String descrizione;
 
     //TODO: immagine

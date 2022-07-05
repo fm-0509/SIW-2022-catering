@@ -3,8 +3,11 @@ package it.uniroma3.siw.catering.controller;
 import it.uniroma3.siw.catering.Utils;
 import it.uniroma3.siw.catering.model.Buffet;
 import it.uniroma3.siw.catering.service.BuffetService;
+import it.uniroma3.siw.catering.service.ChefService;
 import it.uniroma3.siw.catering.service.CredentialService;
+import it.uniroma3.siw.catering.service.PiattoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,29 +28,25 @@ public class BuffetController {
 
     @Autowired
     private BuffetService buffetService;
-
-
-
+    @Autowired
+    private ChefService chefService;
+    @Autowired
+    private PiattoService piattoService;
 
 
     @RequestMapping(value = {"/buffet","/admin/buffet"}, method = RequestMethod.GET)
     public String getAllBuffets(Model model)
     {
         model.addAttribute("buffets", this.buffetService.getAllBuffets());
-        if(IsAdmin())
-            return "/admin/listaBuffets";
-        else
-            return "listaBuffets";
+        model.addAttribute("chefs", this.chefService.getAllChefs());
+        return "buffet";
     }
 
-    @RequestMapping(value = "buffet/{$id}", method = RequestMethod.GET)
+    @RequestMapping(value = "buffet/{id}", method = RequestMethod.GET)
     public String getBuffetById(@ModelAttribute("id") Long id, Model model)
     {
         model.addAttribute("buffet", this.buffetService.findById(id));
-        if(IsAdmin())
-            return "admin/dettagliBuffet";
-        else
-            return "dettagliBuffet";
+        return "dettagliBuffet";
     }
 
     @RequestMapping(value = "/admin/addBuffet", method = RequestMethod.GET)
@@ -71,6 +70,13 @@ public class BuffetController {
         else
             return "/admin/addBuffetForm";
 
+    }
+
+    @RequestMapping(value = "/piatto/{id}")
+    public String getPiatto(@ModelAttribute("id") Long id, Model model)
+    {
+        model.addAttribute("piatto", this.piattoService.getPiattoById(id));
+        return "/dettagliPiatto";
     }
 
 

@@ -39,7 +39,15 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                 // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
                 .antMatchers(HttpMethod.GET, "/", "/index", "/login", "/register", "/css/**", "/images/**", "/favicon.ico", "/login*").permitAll()
                 // chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register
-                .antMatchers(HttpMethod.POST, "/login", "/register").permitAll()
+                .antMatchers(HttpMethod.GET, "/login", "/register").permitAll()
+                .antMatchers(HttpMethod.POST, "/register").permitAll()
+
+                //API
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
+                .antMatchers(HttpMethod.PUT, "/api/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/**").permitAll()
+
                 // solo gli utenti autenticati con ruolo ADMIN possono accedere a risorse con path /admin/**
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(ADMIN_ROLE)
                 .antMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(ADMIN_ROLE)
@@ -54,22 +62,22 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                                 .defaultSuccessUrl("/loginSuccess")
                                 .failureUrl("/loginError")
                 );
-                // la pagina di login si trova a /login
-                // NOTA: Spring gestisce il post di login automaticamente
-                // se il login ha successo, si viene rediretti al path /default
+        // la pagina di login si trova a /login
+        // NOTA: Spring gestisce il post di login automaticamente
+        // se il login ha successo, si viene rediretti al path /default
 
 
-                // logout paragraph: qui definiamo il logout
-                http.logout()
+        // logout paragraph: qui definiamo il logout
+        http.logout()
                 // il logout è attivato con una richiesta GET a "/logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-          //      .logoutUrl("/logout")
+                //      .logoutUrl("/logout")
                 // in caso di successo, si viene reindirizzati alla /index page
                 .logoutSuccessUrl("/logoutSuccess")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true).permitAll();
+        http.csrf().disable();
     }
-
     /**
      * This method provides the SQL queries to get username and password.
      */

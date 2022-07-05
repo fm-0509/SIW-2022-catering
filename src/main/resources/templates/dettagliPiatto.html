@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="it">
+<head th:replace="fragments/base.html :: headerfiles(test)"> </head>
+<body>
+<header th:replace="fragments/base.html :: intestazione"></header>
+<div class="container">
+    <div th:if="${alert != null}">
+        <div th:replace="fragments/base.html :: alert(${alert})"></div>
+    </div>
+    <h2>Dettagli buffet</h2>
+    <div class="container py-5">
+        <h2 th:text="${piatto.nome}"></h2>
+        <p th:text="${piatto.descrizione}"></p>
+
+
+
+      <table th:if="${piatto.ingredienti}" class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Origine</th>
+                <th scope="col">Descrizione</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ingrediente : ${piatto.ingredienti}">
+                <td th:text="${ingrediente.nome}"></td>
+                <td th:text="${ingrediente.origine}"></td>
+                <td th:text="${ingrediente.descrizione}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div sec:authorize="hasAnyAuthority('ADMIN')">
+        <button class="btn btn-primary" id="add_ingrediente">Aggiungi ingrediente</button>
+
+
+        <div class="modal fade" tabindex="-1" id="modal_form">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Aggiungi ingrediente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="px-4" action="#" id="aggiungi_ingrediente">
+                            <div class="form-group">
+                                <label for="nome">Nome</label>
+                                <input id="nome" class="form-control" type="text" placeholder="Nome" required="" name="nome" value="">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="origine">Origine</label>
+                                <input id="origine" class="form-control" type="text" placeholder="origine" required="" name="origine" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="descrizione">Descrizione</label>
+                                <textarea id="descrizione" class="form-control" type="text" placeholder="Descrizione" required="" name="descrizione" value=""></textarea>
+                            </div>
+
+                            <input type="hidden" th:value="${piatto.id}" name="piatto" />
+
+                        </form>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-primary" id="invia">Inserisci</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+
+
+    </div>
+<footer th:replace="fragments/base.html :: footer"></footer>
+
+
+<script>
+    $(function (){
+        const modal = new bootstrap.Modal('#modal_form');
+
+
+
+
+        $("#add_ingrediente").click(function (){
+            modal.show();
+        })
+
+
+        $("#invia").click(function () {
+            $.ajax(
+                {
+                    method : "POST",
+                    url : "/api/ingrediente",
+                    data: $("#aggiungi_ingrediente").serialize(),
+                    success: function (response)
+                    {
+                        if(response.status == 200)
+                            location.reload();
+                        else
+                            $("#alert-ct").html(response.html);
+                    },
+                    error: function (response) {
+                        alert(response.html);
+                    }
+                }
+            )
+
+
+
+
+        })
+
+
+        $("#invia_modifica").click(function (){
+            $.ajax(
+                {
+                    method : "PUT",
+                    url : "/api/buffet",
+                    data: $("#modifica_buffet").serialize(),
+                    success: function (response)
+                    {
+                        if(response.status == 200)
+                            location.reload();
+                        else
+                            $("#alert-ct").html(response.html);
+                    },
+                    error: function (response) {
+                        alert(response.html);
+                    }
+                }
+            )
+
+        })
+
+
+    })
+
+
+</script>
+
+
+
+</body>
+</html>

@@ -17,7 +17,7 @@ public class ChefService {
     @Autowired
     private ChefRepository chefRepository;
 
-    public List<Chef> getAllBuffets()
+    public List<Chef> getAllChefs()
     {
        return IterableToList(this.chefRepository.findAll());
     }
@@ -26,11 +26,5 @@ public class ChefService {
         return this.chefRepository.findById(id).orElse(null);
     }
 
-    public List<Chef> getAllChefs() {
-        ArrayList<Chef> chefs = new ArrayList<>();
-        for(Chef c: this.chefRepository.findAll())
-            chefs.add(c);
 
-        return chefs;
-    }
 }

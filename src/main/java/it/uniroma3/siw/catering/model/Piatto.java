@@ -28,4 +28,15 @@ public class Piatto {
     @OneToOne(fetch = FetchType.LAZY)
     private Image image;
 
+    @ManyToOne
+    @JoinColumn(name = "buffet_id")
+    private Buffet buffet;
+
+    public Buffet getBuffet() {
+        return buffet;
+    }
+
+    public void setBuffet(Buffet buffet) {
+        this.buffet = buffet;
+    }
 }

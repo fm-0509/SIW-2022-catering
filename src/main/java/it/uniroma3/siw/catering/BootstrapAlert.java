@@ -1,9 +1,5 @@
 package it.uniroma3.siw.catering;
 
-
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 public final class BootstrapAlert {
     private final static String PRIMARY = "primary";
     private final static String SECONDARY = "secondary";
@@ -96,6 +92,15 @@ public final class BootstrapAlert {
     public static BootstrapAlert Info(String message, String tag)
     {
         return new BootstrapAlert(message, INFO , tag);
+    }
+
+
+    public String getHTML()
+    {
+        return          "<div class=\"alert alert-dismissible fade show "+ this.getCSS() + "\"  role=\"alert\">\n" +
+                this.getMessage() +"\n" +
+                "    <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\" />\n" +
+                "  </div>";
     }
 
 
